@@ -24,3 +24,4 @@ O projeto utiliza as seguintes dependências e tecnologias, conforme especificad
 - **Project Lombok**: Biblioteca que simplifica a criação de classes Java com menos código boilerplate.
 - **Tomcat**: Servidor web embutido do Spring Boot.
 - **Spring Boot Test**: Biblioteca de testes para aplicações Spring Boot.
+- **Springdoc OpenAPI UI**: Biblioteca para geração de documentação OpenAPI e UI.
