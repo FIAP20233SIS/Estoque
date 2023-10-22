@@ -12,6 +12,12 @@ public class BusinessException extends NestedException {
         this.args = args.clone();
     }
 
+    public BusinessException(String resourceId, String message, Exception exception) {
+        super(message, exception);
+        this.resourceId = resourceId;
+		this.args = null;
+    }
+    
     public BusinessException(String resourceId, Exception exception, String... args) {
         super(resourceId, exception);
         this.resourceId = resourceId;
