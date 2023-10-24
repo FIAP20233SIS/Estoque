@@ -1,7 +1,5 @@
 package br.com.fiap.estoque.domain.entity;
 
-import java.util.Date;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
