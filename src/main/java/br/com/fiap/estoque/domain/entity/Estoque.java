@@ -2,8 +2,7 @@ package br.com.fiap.estoque.domain.entity;
 
 import java.util.Date;
 
-import org.springframework.data.annotation.Id;
-
+import jakarta.persistence.Id;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -19,12 +18,12 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-@Entity(name = "Estoque")
+@Entity
 @Table(name = "Estoque")
 public class Estoque {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long prateleiraId;
 	private String codProduto;
 	private Date dataEstoque;
