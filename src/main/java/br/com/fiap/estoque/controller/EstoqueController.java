@@ -23,8 +23,10 @@ import jakarta.validation.Valid;
 @RequestMapping("/estoque")
 public interface EstoqueController {
 
-	@Operation(summary = "Estoque API - Digital One Platform", description = "Returns a OK or NOK Login", tags = {
-			"Estoque API" })
+	@Operation(summary = "Estoque API - Digital One Platform",
+			description = "Vai retornar o número de espaços disponíveis no estoque para a largura, altura e profundidade informada."
+					+ "\nRetornará 0 caso não tenha nenhuma",
+			tags = { "Estoque API" })
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "Successful operation", content = @Content(schema = @Schema(implementation = ResponseEntity.class))),
 			@ApiResponse(responseCode = "400", description = "Invalid Login Data supplied", content = @Content),

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import br.com.fiap.estoque.domain.model.VerificaEspacoDTO;
 import br.com.fiap.estoque.domain.repository.EstoqueRepository;
 import br.com.fiap.estoque.domain.usecase.EstoqueUsecase;
+import br.com.fiap.estoque.infrastructure.LoggingModule;
 
 @Service
 public class EstoqueImpl implements EstoqueUsecase {
@@ -15,8 +16,12 @@ public class EstoqueImpl implements EstoqueUsecase {
 
 	@Override
 	public double verificarEstoque(VerificaEspacoDTO verificaDTO) {
+		LoggingModule.info("iniciando método: verificarEstoque(verificaDTO)]");
+		
 		double volume = EstoqueImpl.calcularVolume(verificaDTO.largura(), verificaDTO.altura(), verificaDTO.profundidade());
 		System.out.println(volume);
+		
+		LoggingModule.info("finalizando método: verificarEstoque(verificaDTO)]");
 		return volume;
 	}
 
