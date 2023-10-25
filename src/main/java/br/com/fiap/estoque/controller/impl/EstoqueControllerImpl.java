@@ -22,12 +22,9 @@ public class EstoqueControllerImpl implements EstoqueController {
 
 	@PostMapping("/verificaespaco")
 	public ResponseEntity<VerificaEspacoResponseDTO> verificaEspacoEstoque(@Valid @RequestBody VerificaEspacoDTO estoqueDTO) {
-		double teste = estoqueService.verificarEstoque(estoqueDTO);
+		var estoque = estoqueService.verificarEstoque(estoqueDTO);
 		
-		var testeResponse = new VerificaEspacoResponseDTO(Integer.valueOf(1));
-		
-		System.out.println(estoqueDTO);
-		return ResponseEntity.ok(testeResponse);
+		return ResponseEntity.ok(estoque);
 	}
 	
 }
