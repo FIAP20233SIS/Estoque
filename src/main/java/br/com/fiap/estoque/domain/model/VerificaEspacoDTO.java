@@ -10,23 +10,23 @@ public record VerificaEspacoDTO(
 		
 		@NotNull
 		@Min(0)
-		Integer largura,
+		Double largura,
 		
 		@NotNull
 		@Min(0)
-		Integer altura,
+		Double altura,
 		
 		@NotNull
 		@Min(0)
-		Integer profundidade,
+		Double profundidade,
 		
 		@NotNull
 		@Min(0)
-		Integer quantidade,
+		Double quantidade,
 		
 		@NotNull
 		@Min(0)
-		Integer volume
+		Double volume
 		) {
 }
 

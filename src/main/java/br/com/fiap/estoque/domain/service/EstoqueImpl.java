@@ -36,6 +36,5 @@ public class EstoqueImpl implements EstoqueUsecase {
     private static double calcularVolume(double largura, double altura, double profundidade) {
         return largura * altura * profundidade;
     }
-
 	
 }
