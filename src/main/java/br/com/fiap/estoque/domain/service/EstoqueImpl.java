@@ -24,11 +24,11 @@ public class EstoqueImpl implements EstoqueUsecase {
 		LoggingModule.info("iniciando método: verificarEstoque(verificaDTO)]");
 		
 		Double volume = Calculos.calcularVolume(verificaDTO.largura(), verificaDTO.altura(), verificaDTO.profundidade());
-		LoggingModule.info("Volume no service" + volume.toString());
+		LoggingModule.info("Volume no service? " + volume.toString());
 
 		List<EstoqueResumoDTO> qtdeLugaresDisponiveis = estoqueRepository.countEstoqueByTamanhoWithEmptyPrateleira(volume.toString());
 		
-		LoggingModule.info("Qunatidade achada" + qtdeLugaresDisponiveis);
+		LoggingModule.info("Qunatidade achada: " + qtdeLugaresDisponiveis.size());
 		LoggingModule.info("finalizando método: verificarEstoque(verificaDTO)]");
 		return new VerificaEspacoResponseDTO(qtdeLugaresDisponiveis.size());
 	}

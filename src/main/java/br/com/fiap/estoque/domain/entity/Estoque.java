@@ -36,6 +36,7 @@ public class Estoque {
 
     @Column(name = "COD_PRODUTO")
     private String codProduto;
+    @Column(name = "DATA_ESTOQUE")
     private Date dataEstoque;
 
 }

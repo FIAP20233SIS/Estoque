@@ -1,10 +1,12 @@
 package br.com.fiap.estoque.domain.model;
 
 public class EstoqueResumoDTO {
-	
+
 	private Long prateleiraId;
-	
-	public EstoqueResumoDTO() {}
+	private String tamanhoParam;
+
+	public EstoqueResumoDTO() {
+	}
 
 	public Long getPrateleiraId() {
 		return prateleiraId;
@@ -12,6 +14,14 @@ public class EstoqueResumoDTO {
 
 	public void setPrateleiraId(Long prateleiraId) {
 		this.prateleiraId = prateleiraId;
+	}
+
+	public String getTamanhoParam() {
+		return tamanhoParam;
+	}
+
+	public void setTamanhoParam(String tamanhoParam) {
+		this.tamanhoParam = tamanhoParam;
 	}
 
 }

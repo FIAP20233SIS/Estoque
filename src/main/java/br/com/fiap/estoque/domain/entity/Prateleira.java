@@ -25,6 +25,7 @@ public class Prateleira {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "ID_PRATELEIRA")
 	private Long prateleiraId;
+	@Column(name = "TAMANHO")
 	private String tamanho;
 	
 }
