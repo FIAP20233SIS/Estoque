@@ -11,6 +11,7 @@ import br.com.fiap.estoque.domain.model.VerificaEspacoResponseDTO;
 import br.com.fiap.estoque.domain.repository.EstoqueRepository;
 import br.com.fiap.estoque.domain.usecase.EstoqueUsecase;
 import br.com.fiap.estoque.infrastructure.LoggingModule;
+import br.com.fiap.estoque.utils.Calculos;
 
 @Service
 public class EstoqueImpl implements EstoqueUsecase {
@@ -21,9 +22,13 @@ public class EstoqueImpl implements EstoqueUsecase {
 	@Override
 	public VerificaEspacoResponseDTO verificarEstoque(VerificaEspacoDTO verificaDTO) {
 		LoggingModule.info("iniciando método: verificarEstoque(verificaDTO)]");
+		
+		Double volume = Calculos.calcularVolume(verificaDTO.largura(), verificaDTO.altura(), verificaDTO.profundidade());
+		LoggingModule.info("Volume no service" + volume.toString());
 
-		List<EstoqueResumoDTO> qtdeLugaresDisponiveis = estoqueRepository.countEstoqueByTamanhoWithEmptyPrateleira();
-
+		List<EstoqueResumoDTO> qtdeLugaresDisponiveis = estoqueRepository.countEstoqueByTamanhoWithEmptyPrateleira(volume.toString());
+		
+		LoggingModule.info("Qunatidade achada" + qtdeLugaresDisponiveis);
 		LoggingModule.info("finalizando método: verificarEstoque(verificaDTO)]");
 		return new VerificaEspacoResponseDTO(qtdeLugaresDisponiveis.size());
 	}

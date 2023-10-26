@@ -1,5 +1,7 @@
 package br.com.fiap.estoque.utils;
 
+import br.com.fiap.estoque.infrastructure.LoggingModule;
+
 public class Calculos {
 
 	/**
@@ -12,7 +14,11 @@ public class Calculos {
 	 * @return O volume calculado.
 	 */
 	public static double calcularVolume(double largura, double altura, double profundidade) {
-		return largura * altura * profundidade;
+		var volume = largura * altura * profundidade;
+		
+		LoggingModule.info("Volume calculado:" + volume);
+		
+		return volume;
 	}
 	
 }

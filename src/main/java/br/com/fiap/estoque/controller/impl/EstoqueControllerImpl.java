@@ -19,7 +19,7 @@ public class EstoqueControllerImpl implements EstoqueController {
 	
 	@Autowired
 	private EstoqueImpl estoqueService;
-
+	
 	@PostMapping("/verificaespaco")
 	public ResponseEntity<VerificaEspacoResponseDTO> verificaEspacoEstoque(@Valid @RequestBody VerificaEspacoDTO estoqueDTO) {
 		var estoque = estoqueService.verificarEstoque(estoqueDTO);
