@@ -15,6 +15,6 @@ public interface EstoqueRepository extends JpaRepository<Estoque, Long> {
         "INNER JOIN e.prateleira p " +
         "WHERE p.tamanho = :tamanhoParam " +
         "AND e.codProduto IS NULL")
-    List<EstoqueResumoDTO> countEstoqueByTamanhoWithEmptyPrateleira(@Param("tamanhoParam") String tamanho);
+    List<Integer> countEstoqueByTamanhoWithEmptyPrateleira(@Param("tamanhoParam") String tamanho);
 }
 
