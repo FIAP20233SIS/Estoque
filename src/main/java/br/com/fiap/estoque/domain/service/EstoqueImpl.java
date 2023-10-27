@@ -10,6 +10,7 @@ import br.com.fiap.estoque.domain.dao.EstoqueDAOImpl;
 import br.com.fiap.estoque.domain.model.VerificaEspacoDTO;
 import br.com.fiap.estoque.domain.model.VerificaEspacoResponseDTO;
 import br.com.fiap.estoque.domain.usecase.EstoqueUsecase;
+import br.com.fiap.estoque.domain.validations.StockValidator;
 import br.com.fiap.estoque.infrastructure.LoggingModule;
 import br.com.fiap.estoque.infrastructure.exception.BusinessException;
 import br.com.fiap.estoque.utils.Calculos;
@@ -20,6 +21,9 @@ public class EstoqueImpl implements EstoqueUsecase {
 	
 	@Autowired
 	private EstoqueDAOImpl estoqueDAO;
+	
+	@Autowired
+	private List<StockValidator> validators;
 
 	@Override
 	public VerificaEspacoResponseDTO verificarEstoque(VerificaEspacoDTO verificaDTO) {
@@ -37,8 +41,14 @@ public class EstoqueImpl implements EstoqueUsecase {
 	
 	public String movimentarEstoque(VerificaEspacoDTO model) throws BusinessException {
 		LoggingModule.info("iniciando método: movimentarEstoque(model)]");
-		
-		this.criticaMovimentarEstoque(model);
+
+		validators.forEach(v -> {
+			try {
+				v.validate(model);
+			} catch (BusinessException e) {
+				e.printStackTrace();
+			}
+		});
 		
         List<Double> values = createValuesList(model);
         Integer tamanho = Calculos.verificaTamanho(values);
@@ -50,19 +60,6 @@ public class EstoqueImpl implements EstoqueUsecase {
         return produtoIncluido;
 	}
 	
-	private void criticaMovimentarEstoque(VerificaEspacoDTO model) throws BusinessException {
-		var estoque = this.verificarEstoque(model);
-		
-		if (estoque.lugaresDisponiveis().intValue() == 0) {
-			LoggingModule.debug("Não há espaço suficiente para o produto " + model.codigoBarras() + ".");
-			throw new BusinessException("Não há espaço suficiente para esse produto.");
-		}
-		
-		Double volume = Calculos.calcularVolume(model.largura(), model.altura(), model.profundidade());
-		if (volume.intValue() == 0) {
-			throw new BusinessException("Volume igual à 0 não é permitido.", "volume.error");
-		}
-	}
 	
 	private List<Double> createValuesList(VerificaEspacoDTO model) {
 	    return List.of(model.largura(), model.altura(), model.profundidade());

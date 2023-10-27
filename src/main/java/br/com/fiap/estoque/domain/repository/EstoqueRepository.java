@@ -7,9 +7,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import br.com.fiap.estoque.domain.entity.Estoque;
-import br.com.fiap.estoque.domain.model.EstoqueResumoDTO;
 public interface EstoqueRepository extends JpaRepository<Estoque, Long> {
-
+	
+	@Deprecated
     @Query("SELECT e.prateleira.prateleiraId " +
         "FROM Estoque e " +
         "INNER JOIN e.prateleira p " +
