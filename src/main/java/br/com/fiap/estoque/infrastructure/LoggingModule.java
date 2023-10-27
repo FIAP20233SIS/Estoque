@@ -65,6 +65,6 @@ public class LoggingModule {
 	 * @param throwable A exceção a ser registrada no log.
 	 */
 	public static void debug(String message, Throwable throwable) {
-		logger.debug(message);
+		logger.debug(message, throwable);
 	}
 }
