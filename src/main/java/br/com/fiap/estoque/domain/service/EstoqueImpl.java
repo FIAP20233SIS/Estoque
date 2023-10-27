@@ -18,18 +18,19 @@ import br.com.fiap.estoque.utils.Providers;
 
 @Service
 public class EstoqueImpl implements EstoqueUsecase {
-	
+
 	@Autowired
 	private EstoqueDAOImpl estoqueDAO;
-	
+
 	@Autowired
 	private List<StockValidator> validators;
 
 	@Override
 	public VerificaEspacoResponseDTO verificarEstoque(VerificaEspacoDTO verificaDTO) {
 		LoggingModule.info("iniciando método: verificarEstoque(verificaDTO)]");
-		
-		Double volume = Calculos.calcularVolume(verificaDTO.largura(), verificaDTO.altura(), verificaDTO.profundidade());
+
+		Double volume = Calculos.calcularVolume(verificaDTO.largura(), verificaDTO.altura(),
+				verificaDTO.profundidade());
 		LoggingModule.debug("Volume no service: " + volume.toString());
 
 		Long qtdeLugaresDisponiveis = estoqueDAO.countEstoqueByTamanhoWithEmptyPrateleira(volume);
@@ -38,23 +39,23 @@ public class EstoqueImpl implements EstoqueUsecase {
 		LoggingModule.info("finalizando método: verificarEstoque(verificaDTO)]");
 		return new VerificaEspacoResponseDTO(qtdeLugaresDisponiveis);
 	}
-	
+
 	public String movimentarEstoque(VerificaEspacoDTO model) throws BusinessException {
 		LoggingModule.info("iniciando método: movimentarEstoque(model)]");
 
 		this.callValidators(model);
-		
-        List<Double> values = Providers.createSideSizeValuesList(model);
-        Integer tamanho = Calculos.verificaTamanho(values);
-        
-        String produtoIncluido = ProductSize.getDescriptionByValue(tamanho);
-		
+
+		List<Double> values = Providers.createSideSizeValuesList(model);
+		Integer tamanho = Calculos.verificaTamanho(values);
+
+		String produtoIncluido = ProductSize.getDescriptionByValue(tamanho);
+
 		LoggingModule.info("finalizando método: movimentarEstoque(model)]");
-        return produtoIncluido;
+		return produtoIncluido;
 	}
-	
+
 	private void callValidators(VerificaEspacoDTO model) {
-		LoggingModule.debug("[" + this.getClass().getName() + "] " +  "iniciando chamada dos validators... ");
+		LoggingModule.debug("[" + this.getClass().getName() + "] " + "iniciando chamada dos validators... ");
 		validators.forEach(v -> {
 			try {
 				v.validate(model);
@@ -63,7 +64,7 @@ public class EstoqueImpl implements EstoqueUsecase {
 				LoggingModule.debug("[" + this.getClass().getName() + "] " + "Erro nos validadores: ");
 			}
 		});
-		LoggingModule.debug("[" + this.getClass().getName() + "] " +  "finalizando chamada dos validators. ");
+		LoggingModule.debug("[" + this.getClass().getName() + "] " + "finalizando chamada dos validators. ");
 	}
 
 }
