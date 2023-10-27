@@ -1,5 +1,6 @@
 package br.com.fiap.estoque.domain.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +15,7 @@ import br.com.fiap.estoque.domain.usecase.EstoqueUsecase;
 import br.com.fiap.estoque.infrastructure.LoggingModule;
 import br.com.fiap.estoque.infrastructure.exception.BusinessException;
 import br.com.fiap.estoque.utils.Calculos;
+import br.com.fiap.estoque.utils.Mappers;
 
 @Service
 public class EstoqueImpl implements EstoqueUsecase {
@@ -38,6 +40,19 @@ public class EstoqueImpl implements EstoqueUsecase {
 	public String movimentarEstoque(VerificaEspacoDTO model) throws BusinessException {
 		LoggingModule.info("iniciando método: movimentarEstoque(model)]");
 		
+		this.criticaMovimentarEstoque(model);
+		
+        List<Double> values = createValuesList(model);
+        Integer tamanho = Calculos.verificaTamanho(values);
+        
+        Map<Integer, String> sizeMap = Mappers.sizeMapper();
+        String produtoIncluido = sizeMap.getOrDefault(tamanho, "Não cabe");
+		
+		LoggingModule.info("finalizando método: movimentarEstoque(model)]");
+        return produtoIncluido;
+	}
+	
+	private void criticaMovimentarEstoque(VerificaEspacoDTO model) throws BusinessException {
 		var estoque = this.verificarEstoque(model);
 		
 		if (estoque.lugaresDisponiveis().intValue() == 0) {
@@ -49,26 +64,10 @@ public class EstoqueImpl implements EstoqueUsecase {
 		if (volume.intValue() == 0) {
 			throw new BusinessException("Volume igual à 0 não é permitido.", "volume.error");
 		}
-
-        List<Double> values = List.of(model.largura(), model.altura(), model.profundidade());
-        Integer tamanho = Calculos.verificaTamanho(values);
-        
-        Map<Integer, String> sizeMap = sizeMapper();
-        
-        String produtoIncluido = sizeMap.getOrDefault(tamanho, "Não cabe");
-		
-		LoggingModule.info("finalizando método: movimentarEstoque(model)]");
-        return produtoIncluido;
 	}
 	
-    public static Map<Integer, String> sizeMapper() {
-        Map<Integer, String> messageMap = new HashMap<>();
-        
-        messageMap.put(0, "Produto Pequeno");
-        messageMap.put(1, "Produto Médio");
-        messageMap.put(2, "Produto Grande");
-        
-        return messageMap;
-    }
+	private List<Double> createValuesList(VerificaEspacoDTO model) {
+	    return List.of(model.largura(), model.altura(), model.profundidade());
+	}
 
 }
