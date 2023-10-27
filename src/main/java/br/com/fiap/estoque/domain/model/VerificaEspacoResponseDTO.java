@@ -1,6 +1,8 @@
 package br.com.fiap.estoque.domain.model;
 
+import java.math.BigDecimal;
+
 public record VerificaEspacoResponseDTO (
-		Integer lugaresDisponiveis
+		Long  lugaresDisponiveis
 		){
 }
