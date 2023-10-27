@@ -36,6 +36,8 @@ public class EstoqueImpl implements EstoqueUsecase {
 	}
 	
 	public String movimentarEstoque(VerificaEspacoDTO model) throws BusinessException {
+		LoggingModule.info("iniciando método: movimentarEstoque(model)]");
+		
 		var estoque = this.verificarEstoque(model);
 		
 		if (estoque.lugaresDisponiveis().intValue() == 0) {
@@ -55,8 +57,8 @@ public class EstoqueImpl implements EstoqueUsecase {
         
         String produtoIncluido = sizeMap.getOrDefault(tamanho, "Não cabe");
 		
+		LoggingModule.info("finalizando método: movimentarEstoque(model)]");
         return produtoIncluido;
-		
 	}
 	
     public static Map<Integer, String> sizeMapper() {
