@@ -15,6 +15,7 @@ import br.com.fiap.estoque.infrastructure.LoggingModule;
 import br.com.fiap.estoque.infrastructure.exception.BusinessException;
 import br.com.fiap.estoque.utils.Calculos;
 import br.com.fiap.estoque.utils.Mappers;
+import br.com.fiap.estoque.utils.Providers;
 
 @Service
 public class EstoqueImpl implements EstoqueUsecase {
@@ -42,15 +43,9 @@ public class EstoqueImpl implements EstoqueUsecase {
 	public String movimentarEstoque(VerificaEspacoDTO model) throws BusinessException {
 		LoggingModule.info("iniciando método: movimentarEstoque(model)]");
 
-		validators.forEach(v -> {
-			try {
-				v.validate(model);
-			} catch (BusinessException e) {
-				e.printStackTrace();
-			}
-		});
+		this.callValidators(model);
 		
-        List<Double> values = createValuesList(model);
+        List<Double> values = Providers.createSideSizeValuesList(model);
         Integer tamanho = Calculos.verificaTamanho(values);
         
         Map<Integer, String> sizeMap = Mappers.sizeMapper();
@@ -60,9 +55,17 @@ public class EstoqueImpl implements EstoqueUsecase {
         return produtoIncluido;
 	}
 	
-	
-	private List<Double> createValuesList(VerificaEspacoDTO model) {
-	    return List.of(model.largura(), model.altura(), model.profundidade());
+	private void callValidators(VerificaEspacoDTO model) {
+		LoggingModule.debug("[" + this.getClass().getName() + "] " +  "iniciando chamada dos validators... ");
+		validators.forEach(v -> {
+			try {
+				v.validate(model);
+			} catch (BusinessException e) {
+				e.printStackTrace();
+				LoggingModule.debug("[" + this.getClass().getName() + "] " + "Erro nos validadores: ");
+			}
+		});
+		LoggingModule.debug("[" + this.getClass().getName() + "] " +  "finalizando chamada dos validators. ");
 	}
 
 }
