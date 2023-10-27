@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import br.com.fiap.estoque.infrastructure.exception.BusinessException;
 import br.com.fiap.estoque.infrastructure.exception.RecordNotFoundException;
 import jakarta.persistence.EntityNotFoundException;
 
@@ -27,5 +28,11 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<ErrorResponse> handleRecordNotFoundException(RecordNotFoundException ex) {
 		ErrorResponse error = new ErrorResponse(ex.getMessage(), HttpStatus.NOT_FOUND.value());
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+	}
+	
+	@ExceptionHandler(BusinessException.class)
+	public ResponseEntity<ErrorResponse> handleBusinessException(BusinessException ex) {
+		ErrorResponse error = new ErrorResponse(ex.getMessage(), HttpStatus.BAD_REQUEST.value());
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
 	}
 }

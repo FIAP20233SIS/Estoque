@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.fiap.estoque.domain.model.VerificaEspacoDTO;
 import br.com.fiap.estoque.domain.model.VerificaEspacoResponseDTO;
+import br.com.fiap.estoque.infrastructure.exception.BusinessException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -28,14 +29,15 @@ public interface EstoqueController {
 					+ "\nRetornará 0 caso não tenha nenhuma",
 			tags = { "Estoque API" })
 	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "Successful operation", content = @Content(schema = @Schema(implementation = ResponseEntity.class))),
-			@ApiResponse(responseCode = "400", description = "Invalid Login Data supplied", content = @Content),
-			@ApiResponse(responseCode = "401", description = "Invalid Authentication supplied", content = @Content),
-			@ApiResponse(responseCode = "403", description = "Invalid Authorization supplied", content = @Content),
-			@ApiResponse(responseCode = "404", description = "Login or Password not found", content = @Content) })
+	@ApiResponse(responseCode = "200", description = "Successful operation", content = @Content(schema = @Schema(implementation = ResponseEntity.class))),
+	@ApiResponse(responseCode = "400", description = "Invalid Login Data supplied", content = @Content),
+	@ApiResponse(responseCode = "401", description = "Invalid Authentication supplied", content = @Content),
+	@ApiResponse(responseCode = "403", description = "Invalid Authorization supplied", content = @Content),
+	@ApiResponse(responseCode = "404", description = "Login or Password not found", content = @Content) })
 	@PostMapping(value = "/", consumes = "multipart/form-data")
 	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<VerificaEspacoResponseDTO> verificaEspacoEstoque(
-			@Valid @RequestBody VerificaEspacoDTO estoqueDTO);
+	public ResponseEntity<VerificaEspacoResponseDTO> verificaEspacoEstoque(@Valid @RequestBody VerificaEspacoDTO estoqueDTO);
+	
+	public ResponseEntity<String> movimentarEstoque(@Valid @RequestBody VerificaEspacoDTO estoqueDTO) throws BusinessException;
 
 }
