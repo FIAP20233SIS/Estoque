@@ -1,14 +1,12 @@
 package br.com.fiap.estoque.domain.service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import br.com.fiap.estoque.domain.dao.EstoqueDAO;
+import br.com.fiap.estoque.domain.dao.EstoqueDAOImpl;
 import br.com.fiap.estoque.domain.model.VerificaEspacoDTO;
 import br.com.fiap.estoque.domain.model.VerificaEspacoResponseDTO;
 import br.com.fiap.estoque.domain.usecase.EstoqueUsecase;
@@ -21,7 +19,7 @@ import br.com.fiap.estoque.utils.Mappers;
 public class EstoqueImpl implements EstoqueUsecase {
 	
 	@Autowired
-	private EstoqueDAO estoqueDAO;
+	private EstoqueDAOImpl estoqueDAO;
 
 	@Override
 	public VerificaEspacoResponseDTO verificarEstoque(VerificaEspacoDTO verificaDTO) {
@@ -56,7 +54,7 @@ public class EstoqueImpl implements EstoqueUsecase {
 		var estoque = this.verificarEstoque(model);
 		
 		if (estoque.lugaresDisponiveis().intValue() == 0) {
-			LoggingModule.info("Não há espaço suficiente para esse produto.");
+			LoggingModule.info("Não há espaço suficiente para o produto " + model.codigoBarras() + ".");
 			throw new BusinessException("Não há espaço suficiente para esse produto.");
 		}
 		
