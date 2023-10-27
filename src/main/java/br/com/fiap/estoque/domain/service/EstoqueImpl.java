@@ -26,10 +26,10 @@ public class EstoqueImpl implements EstoqueUsecase {
 		LoggingModule.info("iniciando método: verificarEstoque(verificaDTO)]");
 		
 		Double volume = Calculos.calcularVolume(verificaDTO.largura(), verificaDTO.altura(), verificaDTO.profundidade());
-		LoggingModule.info("Volume no service: " + volume.toString());
+		LoggingModule.debug("Volume no service: " + volume.toString());
 
 		Long qtdeLugaresDisponiveis = estoqueDAO.countEstoqueByTamanhoWithEmptyPrateleira(volume);
-		LoggingModule.info("Quantidade de lugares encontrados: " + qtdeLugaresDisponiveis);
+		LoggingModule.debug("Quantidade de lugares encontrados: " + qtdeLugaresDisponiveis);
 
 		LoggingModule.info("finalizando método: verificarEstoque(verificaDTO)]");
 		return new VerificaEspacoResponseDTO(qtdeLugaresDisponiveis);
@@ -54,7 +54,7 @@ public class EstoqueImpl implements EstoqueUsecase {
 		var estoque = this.verificarEstoque(model);
 		
 		if (estoque.lugaresDisponiveis().intValue() == 0) {
-			LoggingModule.info("Não há espaço suficiente para o produto " + model.codigoBarras() + ".");
+			LoggingModule.debug("Não há espaço suficiente para o produto " + model.codigoBarras() + ".");
 			throw new BusinessException("Não há espaço suficiente para esse produto.");
 		}
 		

@@ -47,4 +47,24 @@ public class LoggingModule {
 	public static void error(String message, Throwable throwable) {
 		logger.error(message, throwable);
 	}
+	
+	/**
+	 * Registra uma mensagem de log de debug juntamente com uma exceção.
+	 * 
+	 * @param message   A mensagem de log a ser registrada.
+	 * @param throwable A exceção a ser registrada no log.
+	 */
+	public static void debug(String message) {
+		logger.debug(message);
+	}
+	
+	/**
+	 * Registra uma mensagem de log de debug juntamente com uma exceção.
+	 * 
+	 * @param message   A mensagem de log a ser registrada.
+	 * @param throwable A exceção a ser registrada no log.
+	 */
+	public static void debug(String message, Throwable throwable) {
+		logger.debug(message);
+	}
 }

@@ -18,7 +18,7 @@ public class Calculos {
 	public static Double calcularVolume(double largura, double altura, double profundidade) {
 		var volume = largura * altura * profundidade;
 		
-		LoggingModule.info("Volume calculado:" + volume);
+		LoggingModule.debug("Volume calculado:" + volume);
 		
 		return volume;
 	}
