@@ -11,6 +11,7 @@ import br.com.fiap.estoque.controller.EstoqueController;
 import br.com.fiap.estoque.domain.model.VerificaEspacoDTO;
 import br.com.fiap.estoque.domain.model.VerificaEspacoResponseDTO;
 import br.com.fiap.estoque.domain.service.EstoqueImpl;
+import br.com.fiap.estoque.infrastructure.exception.BusinessException;
 import jakarta.validation.Valid;
 
 @RestController
@@ -25,6 +26,13 @@ public class EstoqueControllerImpl implements EstoqueController {
 		var estoque = estoqueService.verificarEstoque(estoqueDTO);
 		
 		return ResponseEntity.ok(estoque);
+	}
+	
+	@PostMapping("/movimentar")
+	public ResponseEntity<String> movimentarEstoque(@Valid @RequestBody VerificaEspacoDTO model) throws BusinessException {
+		String produtoIncluido = estoqueService.movimentarEstoque(model);
+		
+		return ResponseEntity.ok("Produto incluído na prateleira: " + produtoIncluido);
 	}
 	
 }

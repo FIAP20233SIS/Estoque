@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.fiap.estoque.domain.model.VerificaEspacoDTO;
 import br.com.fiap.estoque.domain.model.VerificaEspacoResponseDTO;
+import br.com.fiap.estoque.infrastructure.exception.BusinessException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -37,5 +38,7 @@ public interface EstoqueController {
 	@ResponseStatus(HttpStatus.OK)
 	public ResponseEntity<VerificaEspacoResponseDTO> verificaEspacoEstoque(
 			@Valid @RequestBody VerificaEspacoDTO estoqueDTO);
+	
+	public ResponseEntity<String> movimentarEstoque(@Valid @RequestBody VerificaEspacoDTO estoqueDTO) throws BusinessException;
 
 }
