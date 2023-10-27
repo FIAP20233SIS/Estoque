@@ -1,7 +1,6 @@
 package br.com.fiap.estoque.domain.service;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,10 +10,10 @@ import br.com.fiap.estoque.domain.model.VerificaEspacoDTO;
 import br.com.fiap.estoque.domain.model.VerificaEspacoResponseDTO;
 import br.com.fiap.estoque.domain.usecase.EstoqueUsecase;
 import br.com.fiap.estoque.domain.validations.StockValidator;
+import br.com.fiap.estoque.enums.ProductSize;
 import br.com.fiap.estoque.infrastructure.LoggingModule;
 import br.com.fiap.estoque.infrastructure.exception.BusinessException;
 import br.com.fiap.estoque.utils.Calculos;
-import br.com.fiap.estoque.utils.Mappers;
 import br.com.fiap.estoque.utils.Providers;
 
 @Service
@@ -48,8 +47,7 @@ public class EstoqueImpl implements EstoqueUsecase {
         List<Double> values = Providers.createSideSizeValuesList(model);
         Integer tamanho = Calculos.verificaTamanho(values);
         
-        Map<Integer, String> sizeMap = Mappers.sizeMapper();
-        String produtoIncluido = sizeMap.getOrDefault(tamanho, "Não cabe");
+        String produtoIncluido = ProductSize.getDescriptionByValue(tamanho);
 		
 		LoggingModule.info("finalizando método: movimentarEstoque(model)]");
         return produtoIncluido;
