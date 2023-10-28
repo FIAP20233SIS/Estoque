@@ -80,6 +80,8 @@ public class EstoqueImpl implements EstoqueUsecase {
 				throw new BusinessException("Não há prateleiras disponíveis para o tamanho desse produto.");
 			}
 			
+			// criar lógica para verificar primeiro se já tem um produto com esse código de barras no estoque
+			
 			//--- realiza a inclusão da prateleira
 			int numRowsUpdated = estoqueDAO.incluirEstoque(model.codigoBarras(), idPrateleira);
 			
