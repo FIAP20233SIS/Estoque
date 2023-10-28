@@ -13,6 +13,7 @@ import br.com.fiap.estoque.domain.model.VerificaEspacoDTO;
 import br.com.fiap.estoque.domain.model.VerificaEspacoResponseDTO;
 import br.com.fiap.estoque.domain.usecase.EstoqueUsecase;
 import br.com.fiap.estoque.domain.validations.StockValidator;
+import br.com.fiap.estoque.enums.TipoMovimentacao;
 import br.com.fiap.estoque.infrastructure.LoggingModule;
 import br.com.fiap.estoque.infrastructure.exception.BusinessException;
 import br.com.fiap.estoque.infrastructure.exception.RecordNotFoundException;
@@ -65,13 +66,15 @@ public class EstoqueImpl implements EstoqueUsecase {
 		int tipoMovimentacao = model.tipoMovimentacao().getType();
 		MovimentacaoEstoqueDTO movimentacao = null;
 		
-		if (tipoMovimentacao == 0) {
+		if (tipoMovimentacao == TipoMovimentacao.RETIRADA.getType()) {
 			boolean inStock = this.verificaProdutoNoEstoque(model.codigoBarras(), false);
 			if (inStock) {
-				int numRowsUpdated = estoqueDAO.retiradaEstoque(model.codigoBarras());		
-				movimentacao = new MovimentacaoEstoqueDTO();
-				movimentacao.setCodProduto(model.codigoBarras());
-				movimentacao.setNumRowsUpdated(numRowsUpdated);
+				int numRowsUpdated = estoqueDAO.retiradaEstoque(model.codigoBarras());
+				if (numRowsUpdated > 0) {
+					movimentacao = new MovimentacaoEstoqueDTO();
+					movimentacao.setCodProduto(model.codigoBarras());
+					movimentacao.setNumRowsUpdated(numRowsUpdated);					
+				}
 			} else {
 				throw new BusinessException("O produto " + model.codigoBarras() + " não existe no estoque.");
 			}
