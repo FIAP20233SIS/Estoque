@@ -74,7 +74,7 @@ public class EstoqueImpl implements EstoqueUsecase {
 			
 			// TODO -> criar validador para isso.
 			String hasProduto = estoqueDAO.obterEstoquePorCodigoProduto(model.codigoBarras());
-			if (hasProduto != null && !hasProduto.isEmpty()) {
+			if (hasProduto == null || !hasProduto.isEmpty()) {
 				throw new BusinessException("Já existe um produto com este código de barras no estoque.");
 			}
 			
