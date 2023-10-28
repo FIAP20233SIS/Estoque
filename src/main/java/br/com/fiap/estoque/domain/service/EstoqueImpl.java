@@ -29,8 +29,7 @@ public class EstoqueImpl implements EstoqueUsecase {
 	public VerificaEspacoResponseDTO verificarEstoque(VerificaEspacoDTO verificaDTO) {
 		LoggingModule.info("iniciando método: verificarEstoque(verificaDTO)]");
 
-		Double volume = Calculos.calcularVolume(verificaDTO.largura(), verificaDTO.altura(),
-				verificaDTO.profundidade());
+		Double volume = Calculos.calcularVolume(verificaDTO.largura(), verificaDTO.altura(), verificaDTO.profundidade());
 		LoggingModule.debug("Volume no service: " + volume.toString());
 
 		Long qtdeLugaresDisponiveis = estoqueDAO.countEstoqueByTamanhoWithEmptyPrateleira(volume);
@@ -49,9 +48,20 @@ public class EstoqueImpl implements EstoqueUsecase {
 		Integer tamanho = Calculos.verificaTamanho(values);
 
 		String produtoIncluido = ProductSize.getDescriptionByValue(tamanho);
+		
+		this.movimentarEstoque(model.tipoMovimentacao().getType(), model);
 
 		LoggingModule.info("finalizando método: movimentarEstoque(model)]");
 		return produtoIncluido;
+	}
+	
+	private void movimentarEstoque(int tipoMovimentacao, VerificaEspacoDTO model) {
+		if (tipoMovimentacao == 0) {
+			// realizar lógica para verificação se o produto realmente está no estoque antes de chamar o update.
+			estoqueDAO.retiradaEstoque(model.codigoBarras());
+		} else {
+			estoqueDAO.incluirEstoque(model.codigoBarras(), Long.valueOf(1));
+		}
 	}
 
 	private void callValidators(VerificaEspacoDTO model) {

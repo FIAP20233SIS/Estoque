@@ -1,5 +1,6 @@
 package br.com.fiap.estoque.domain.model;
 
+import br.com.fiap.estoque.enums.TipoMovimentacao;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -26,7 +27,10 @@ public record VerificaEspacoDTO(
 		
 		@NotNull
 		@Min(0)
-		Double volume
+		Double volume,
+		
+		@NotNull
+		TipoMovimentacao tipoMovimentacao
 		) {
 }
 
