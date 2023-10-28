@@ -26,7 +26,7 @@ public class GlobalExceptionHandler {
 
 	@ExceptionHandler(RecordNotFoundException.class)
 	public ResponseEntity<ErrorResponse> handleRecordNotFoundException(RecordNotFoundException ex) {
-		ErrorResponse error = new ErrorResponse(ex.getMessage(), HttpStatus.NOT_FOUND.value());
+		ErrorResponse error = new ErrorResponse(ex.getArgs()[0], HttpStatus.NOT_FOUND.value());
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
 	}
 	
@@ -35,4 +35,5 @@ public class GlobalExceptionHandler {
 		ErrorResponse error = new ErrorResponse(ex.getMessage(), HttpStatus.BAD_REQUEST.value());
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
 	}
+	
 }

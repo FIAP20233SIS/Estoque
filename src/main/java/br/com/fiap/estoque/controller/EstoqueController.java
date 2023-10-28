@@ -3,6 +3,7 @@ package br.com.fiap.estoque.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,7 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.fiap.estoque.domain.model.MovimentacaoEstoqueDTO;
 import br.com.fiap.estoque.domain.model.VerificaEspacoDTO;
 import br.com.fiap.estoque.domain.model.VerificaEspacoResponseDTO;
+import br.com.fiap.estoque.domain.model.VerificaProdutoEstoqueDTO;
 import br.com.fiap.estoque.infrastructure.exception.BusinessException;
+import br.com.fiap.estoque.infrastructure.exception.RecordNotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -25,9 +28,8 @@ import jakarta.validation.Valid;
 @RequestMapping("/estoque")
 public interface EstoqueController {
 
-	@Operation(summary = "Estoque API - Digital One Platform",
-			description = "Vai retornar o número de espaços disponíveis no estoque para a largura, altura e profundidade informada."
-					+ "\nRetornará 0 caso não tenha nenhuma",
+	@Operation(summary = "Estoque API - Verifica o espaço no estoque.",
+			description = "Vai retornar o número de espaços disponíveis no estoque para a largura, altura e profundidade informada.\nRetornará 0 caso não tenha nenhuma",
 			tags = { "Estoque API" })
 	@ApiResponses(value = {
 	@ApiResponse(responseCode = "200", description = "Successful operation", content = @Content(schema = @Schema(implementation = ResponseEntity.class))),
@@ -39,6 +41,15 @@ public interface EstoqueController {
 	@ResponseStatus(HttpStatus.OK)
 	public ResponseEntity<VerificaEspacoResponseDTO> verificaEspacoEstoque(@Valid @RequestBody VerificaEspacoDTO estoqueDTO);
 	
+	@Operation(summary = "Estoque API - Realiza as movimentações no estoque.",
+			description = "Realiza a retirada ou inclusão no estoque.",
+			tags = { "Estoque API" })
 	public ResponseEntity<MovimentacaoEstoqueDTO> movimentarEstoque(@Valid @RequestBody VerificaEspacoDTO estoqueDTO) throws BusinessException;
+	
+	@Operation(summary = "Estoque API - Verifica se um produto já está no estoque.",
+			description = "A partir de um código de barras informado via URL, o endpoint fará uma verificação no banco de dados para ver se já tem um produto cadastrado com o código informado.",
+			tags = { "Estoque API" })
+	public ResponseEntity<VerificaProdutoEstoqueDTO> verificaProdutoEstoque(@PathVariable String codBarras) throws RecordNotFoundException;
+
 
 }

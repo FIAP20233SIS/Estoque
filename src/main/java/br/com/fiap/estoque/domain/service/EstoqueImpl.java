@@ -15,6 +15,7 @@ import br.com.fiap.estoque.domain.usecase.EstoqueUsecase;
 import br.com.fiap.estoque.domain.validations.StockValidator;
 import br.com.fiap.estoque.infrastructure.LoggingModule;
 import br.com.fiap.estoque.infrastructure.exception.BusinessException;
+import br.com.fiap.estoque.infrastructure.exception.RecordNotFoundException;
 import br.com.fiap.estoque.utils.Calculos;
 
 @Service
@@ -64,19 +65,12 @@ public class EstoqueImpl implements EstoqueUsecase {
 		int tipoMovimentacao = model.tipoMovimentacao().getType();
 		MovimentacaoEstoqueDTO movimentacao = null;
 		
+		this.verificaProdutoNoEstoque(model.codigoBarras());
+		
 		if (tipoMovimentacao == 0) {
-			// realizar lógica para verificação se o produto realmente está no estoque antes de chamar o update.
 			estoqueDAO.retiradaEstoque(model.codigoBarras());
 		} else {
 			List<BigDecimal> prateleirasDisponiveis = prateleiraDAO.obterPrateleirasVaziasPorTamanho(tamanho);
-			
-			// verifica primeiro se já tem um produto com esse código de barras no estoque
-			
-			// TODO -> criar validador para isso.
-			String hasProduto = estoqueDAO.obterEstoquePorCodigoProduto(model.codigoBarras());
-			if (hasProduto == null || !hasProduto.isEmpty()) {
-				throw new BusinessException("Já existe um produto com este código de barras no estoque.");
-			}
 			
 			Long idPrateleira = null;
 			
@@ -103,6 +97,24 @@ public class EstoqueImpl implements EstoqueUsecase {
 
 		return movimentacao;
 	}
+	
+	public boolean verificaProdutoNoEstoque(String codBarras, boolean throwEx) throws RecordNotFoundException {
+		String produto = estoqueDAO.obterEstoquePorCodigoProduto(codBarras);
+		
+		boolean hasProdutoInStock = Boolean.FALSE;
+		if (produto != null && !produto.isEmpty()) {
+			hasProdutoInStock = true;
+			if (throwEx) {
+				throw new RecordNotFoundException("Já existe um produto com o código de barras " + codBarras + " no estoque.");				
+			}
+		}
+
+		return hasProdutoInStock;
+	}
+	
+	private boolean verificaProdutoNoEstoque(String codBarras) throws RecordNotFoundException {
+		return this.verificaProdutoNoEstoque(codBarras, true);
+	}
 
 	private void callValidators(VerificaEspacoDTO model) {
 		LoggingModule.debug("[" + this.getClass().getName() + "] " + "iniciando chamada dos validators... ");
@@ -110,8 +122,8 @@ public class EstoqueImpl implements EstoqueUsecase {
 			try {
 				v.validate(model);
 			} catch (BusinessException e) {
-				e.printStackTrace();
 				LoggingModule.error("[" + this.getClass().getName() + "] " + "Erro nos validadores: ");
+				e.printStackTrace();
 			}
 		});
 		LoggingModule.debug("[" + this.getClass().getName() + "] " + "finalizando chamada dos validators. ");

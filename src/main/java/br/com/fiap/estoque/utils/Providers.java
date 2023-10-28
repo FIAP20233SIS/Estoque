@@ -18,5 +18,11 @@ public class Providers {
 	public static List<Double> createSideSizeValuesList(VerificaEspacoDTO model) {
 	    return List.of(model.largura(), model.altura(), model.profundidade());
 	}
+	
+	public static String getProductInStockMessage(boolean hasProdutoInStock, String codBarras) {
+		return hasProdutoInStock
+				? "Já existe um produto com o código de barras " + codBarras + " no estoque."
+				: "Produto não está no estoque.";
+	}
 
 }
