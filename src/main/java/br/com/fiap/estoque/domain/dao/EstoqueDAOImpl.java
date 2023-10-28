@@ -64,7 +64,7 @@ public class EstoqueDAOImpl implements EstoqueDAO {
 		return entityManager
 				.createNativeQuery(sql)
 				.setParameter("codProduto", codProduto)
-				.setParameter("idPrateleira", prateleiraId)
+				.setParameter("prateleiraId", prateleiraId)
 				.executeUpdate();
 	}
 	

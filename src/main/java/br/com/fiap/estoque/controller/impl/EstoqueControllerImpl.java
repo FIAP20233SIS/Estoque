@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.fiap.estoque.controller.EstoqueController;
+import br.com.fiap.estoque.domain.model.MovimentacaoEstoqueDTO;
 import br.com.fiap.estoque.domain.model.VerificaEspacoDTO;
 import br.com.fiap.estoque.domain.model.VerificaEspacoResponseDTO;
 import br.com.fiap.estoque.domain.service.EstoqueImpl;
@@ -29,10 +30,10 @@ public class EstoqueControllerImpl implements EstoqueController {
 	}
 	
 	@PostMapping("/movimentar")
-	public ResponseEntity<String> movimentarEstoque(@Valid @RequestBody VerificaEspacoDTO model) throws BusinessException {
-		String produtoIncluido = estoqueService.movimentarEstoque(model);
+	public ResponseEntity<MovimentacaoEstoqueDTO> movimentarEstoque(@Valid @RequestBody VerificaEspacoDTO model) throws BusinessException {
+		MovimentacaoEstoqueDTO produtoIncluido = estoqueService.movimentarEstoque(model);
 		
-		return ResponseEntity.ok("Produto incluído na prateleira: " + produtoIncluido);
+		return ResponseEntity.ok(produtoIncluido);
 	}
 	
 }

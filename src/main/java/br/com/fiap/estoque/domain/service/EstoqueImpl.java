@@ -1,11 +1,14 @@
 package br.com.fiap.estoque.domain.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.com.fiap.estoque.domain.dao.EstoqueDAOImpl;
+import br.com.fiap.estoque.domain.dao.PrateleiraDAOImpl;
+import br.com.fiap.estoque.domain.model.MovimentacaoEstoqueDTO;
 import br.com.fiap.estoque.domain.model.VerificaEspacoDTO;
 import br.com.fiap.estoque.domain.model.VerificaEspacoResponseDTO;
 import br.com.fiap.estoque.domain.usecase.EstoqueUsecase;
@@ -21,6 +24,9 @@ public class EstoqueImpl implements EstoqueUsecase {
 
 	@Autowired
 	private EstoqueDAOImpl estoqueDAO;
+	
+	@Autowired
+	private PrateleiraDAOImpl prateleiraDAO;
 
 	@Autowired
 	private List<StockValidator> validators;
@@ -39,29 +45,52 @@ public class EstoqueImpl implements EstoqueUsecase {
 		return new VerificaEspacoResponseDTO(qtdeLugaresDisponiveis);
 	}
 
-	public String movimentarEstoque(VerificaEspacoDTO model) throws BusinessException {
+	public MovimentacaoEstoqueDTO movimentarEstoque(VerificaEspacoDTO model) throws BusinessException {
 		LoggingModule.info("iniciando método: movimentarEstoque(model)]");
 
 		this.callValidators(model);
 
-		List<Double> values = Providers.createSideSizeValuesList(model);
-		Integer tamanho = Calculos.verificaTamanho(values);
-
-		String produtoIncluido = ProductSize.getDescriptionByValue(tamanho);
+		var movimentacao = this.movimentarEstoqueBanco(model, Calculos.calcularVolume(model.largura(), model.altura(), model.profundidade()));
 		
-		this.movimentarEstoque(model.tipoMovimentacao().getType(), model);
+		if (movimentacao == null) {
+			LoggingModule.warn("Não foi possível realizar a movimentação.");
+			throw new BusinessException("Não foi possível realizar a movimentação.");
+		}
 
 		LoggingModule.info("finalizando método: movimentarEstoque(model)]");
-		return produtoIncluido;
+		
+		return movimentacao;
 	}
 	
-	private void movimentarEstoque(int tipoMovimentacao, VerificaEspacoDTO model) {
+	private MovimentacaoEstoqueDTO movimentarEstoqueBanco(VerificaEspacoDTO model, Double tamanho) throws BusinessException {
+		int tipoMovimentacao = model.tipoMovimentacao().getType();
+		var movimentacao = new MovimentacaoEstoqueDTO();
+		
 		if (tipoMovimentacao == 0) {
 			// realizar lógica para verificação se o produto realmente está no estoque antes de chamar o update.
 			estoqueDAO.retiradaEstoque(model.codigoBarras());
 		} else {
-			estoqueDAO.incluirEstoque(model.codigoBarras(), Long.valueOf(1));
+			List<BigDecimal> prateleirasDisponiveis = prateleiraDAO.obterPrateleirasVaziasPorTamanho(tamanho);
+			
+			Long idPrateleira = null;
+			
+			if (prateleirasDisponiveis != null && !prateleirasDisponiveis.isEmpty()) {
+				idPrateleira = prateleirasDisponiveis.get(0).longValue();
+			} else {
+				throw new BusinessException("Não há prateleiras disponíveis para o tamanho desse produto.");
+			}
+			
+			int numRowsUpdated = estoqueDAO.incluirEstoque(model.codigoBarras(), idPrateleira);
+			if (numRowsUpdated > 0) {
+				movimentacao.setNumRowsUpdated(numRowsUpdated);
+				movimentacao.setPrateleiraId(idPrateleira);
+				movimentacao.setCodProduto(model.codigoBarras());
+				movimentacao.setTamanhoPrateleira(tamanho);
+			} else {
+				movimentacao = null;
+			}
 		}
+		return movimentacao;
 	}
 
 	private void callValidators(VerificaEspacoDTO model) {

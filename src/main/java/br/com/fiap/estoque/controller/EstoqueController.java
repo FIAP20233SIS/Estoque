@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.fiap.estoque.domain.model.MovimentacaoEstoqueDTO;
 import br.com.fiap.estoque.domain.model.VerificaEspacoDTO;
 import br.com.fiap.estoque.domain.model.VerificaEspacoResponseDTO;
 import br.com.fiap.estoque.infrastructure.exception.BusinessException;
@@ -38,6 +39,6 @@ public interface EstoqueController {
 	@ResponseStatus(HttpStatus.OK)
 	public ResponseEntity<VerificaEspacoResponseDTO> verificaEspacoEstoque(@Valid @RequestBody VerificaEspacoDTO estoqueDTO);
 	
-	public ResponseEntity<String> movimentarEstoque(@Valid @RequestBody VerificaEspacoDTO estoqueDTO) throws BusinessException;
+	public ResponseEntity<MovimentacaoEstoqueDTO> movimentarEstoque(@Valid @RequestBody VerificaEspacoDTO estoqueDTO) throws BusinessException;
 
 }
