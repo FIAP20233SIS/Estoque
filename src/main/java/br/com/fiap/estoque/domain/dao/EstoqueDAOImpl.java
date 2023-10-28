@@ -1,6 +1,7 @@
 package br.com.fiap.estoque.domain.dao;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
@@ -14,6 +15,7 @@ public class EstoqueDAOImpl implements EstoqueDAO {
 	@PersistenceContext
 	private EntityManager entityManager;
 
+	@Override
 	public Long countEstoqueByTamanhoWithEmptyPrateleira(double tamanho) {
 		StringBuilder sb = new StringBuilder();
 
@@ -29,6 +31,24 @@ public class EstoqueDAOImpl implements EstoqueDAO {
 				.getSingleResult();
 
 		return count.longValue();
+	}
+	
+	@Override
+	public String obterEstoquePorCodigoProduto(String codProd) {
+	    String sql = "SELECT E.COD_PRODUTO " +
+	                 "FROM ESTOQUE E " +
+	                 "WHERE UPPER(E.COD_PRODUTO) = :codProd";
+	
+		List<?> results = entityManager
+				.createNativeQuery(sql)
+				.setParameter("codProd", codProd.toUpperCase())
+				.getResultList();
+
+		if (results.isEmpty()) {
+			return null;
+		} else {
+			return (String) results.get(0);
+		}
 	}
 
 	@Override

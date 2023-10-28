@@ -13,11 +13,9 @@ import br.com.fiap.estoque.domain.model.VerificaEspacoDTO;
 import br.com.fiap.estoque.domain.model.VerificaEspacoResponseDTO;
 import br.com.fiap.estoque.domain.usecase.EstoqueUsecase;
 import br.com.fiap.estoque.domain.validations.StockValidator;
-import br.com.fiap.estoque.enums.ProductSize;
 import br.com.fiap.estoque.infrastructure.LoggingModule;
 import br.com.fiap.estoque.infrastructure.exception.BusinessException;
 import br.com.fiap.estoque.utils.Calculos;
-import br.com.fiap.estoque.utils.Providers;
 
 @Service
 public class EstoqueImpl implements EstoqueUsecase {
@@ -64,7 +62,7 @@ public class EstoqueImpl implements EstoqueUsecase {
 	
 	private MovimentacaoEstoqueDTO movimentarEstoqueBanco(VerificaEspacoDTO model, Double tamanho) throws BusinessException {
 		int tipoMovimentacao = model.tipoMovimentacao().getType();
-		var movimentacao = new MovimentacaoEstoqueDTO();
+		MovimentacaoEstoqueDTO movimentacao = null;
 		
 		if (tipoMovimentacao == 0) {
 			// realizar lógica para verificação se o produto realmente está no estoque antes de chamar o update.
@@ -72,29 +70,37 @@ public class EstoqueImpl implements EstoqueUsecase {
 		} else {
 			List<BigDecimal> prateleirasDisponiveis = prateleiraDAO.obterPrateleirasVaziasPorTamanho(tamanho);
 			
+			// verifica primeiro se já tem um produto com esse código de barras no estoque
+			
+			// TODO -> criar validador para isso.
+			String hasProduto = estoqueDAO.obterEstoquePorCodigoProduto(model.codigoBarras());
+			if (hasProduto != null && !hasProduto.isEmpty()) {
+				throw new BusinessException("Já existe um produto com este código de barras no estoque.");
+			}
+			
 			Long idPrateleira = null;
 			
+			// TODO -> criar validador para isso.
 			if (prateleirasDisponiveis != null && !prateleirasDisponiveis.isEmpty()) {
 				idPrateleira = prateleirasDisponiveis.get(0).longValue();
 			} else {
 				throw new BusinessException("Não há prateleiras disponíveis para o tamanho desse produto.");
 			}
 			
-			// criar lógica para verificar primeiro se já tem um produto com esse código de barras no estoque
-			
 			//--- realiza a inclusão da prateleira
 			int numRowsUpdated = estoqueDAO.incluirEstoque(model.codigoBarras(), idPrateleira);
+			LoggingModule.debug("Linhas atualizadas na inclusão do estoque: " + numRowsUpdated);
 			
 			// verifica se realmente o produto foi inserido no estoque.
 			if (numRowsUpdated > 0) {
+				movimentacao = new MovimentacaoEstoqueDTO();
 				movimentacao.setNumRowsUpdated(numRowsUpdated);
 				movimentacao.setPrateleiraId(idPrateleira);
 				movimentacao.setCodProduto(model.codigoBarras());
 				movimentacao.setTamanhoPrateleira(tamanho);
-			} else {
-				movimentacao = null;
 			}
 		}
+
 		return movimentacao;
 	}
 
@@ -105,7 +111,7 @@ public class EstoqueImpl implements EstoqueUsecase {
 				v.validate(model);
 			} catch (BusinessException e) {
 				e.printStackTrace();
-				LoggingModule.debug("[" + this.getClass().getName() + "] " + "Erro nos validadores: ");
+				LoggingModule.error("[" + this.getClass().getName() + "] " + "Erro nos validadores: ");
 			}
 		});
 		LoggingModule.debug("[" + this.getClass().getName() + "] " + "finalizando chamada dos validators. ");
