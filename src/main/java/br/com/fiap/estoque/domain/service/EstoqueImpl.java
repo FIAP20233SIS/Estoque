@@ -65,11 +65,18 @@ public class EstoqueImpl implements EstoqueUsecase {
 		int tipoMovimentacao = model.tipoMovimentacao().getType();
 		MovimentacaoEstoqueDTO movimentacao = null;
 		
-		this.verificaProdutoNoEstoque(model.codigoBarras());
-		
 		if (tipoMovimentacao == 0) {
-			estoqueDAO.retiradaEstoque(model.codigoBarras());
+			boolean inStock = this.verificaProdutoNoEstoque(model.codigoBarras(), false);
+			if (inStock) {
+				int numRowsUpdated = estoqueDAO.retiradaEstoque(model.codigoBarras());		
+				movimentacao = new MovimentacaoEstoqueDTO();
+				movimentacao.setCodProduto(model.codigoBarras());
+				movimentacao.setNumRowsUpdated(numRowsUpdated);
+			} else {
+				throw new BusinessException("O produto " + model.codigoBarras() + " não existe no estoque.");
+			}
 		} else {
+			this.verificaProdutoNoEstoque(model.codigoBarras());
 			List<BigDecimal> prateleirasDisponiveis = prateleiraDAO.obterPrateleirasVaziasPorTamanho(tamanho);
 			
 			Long idPrateleira = null;
