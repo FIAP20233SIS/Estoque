@@ -66,6 +66,8 @@ public class EstoqueImpl implements EstoqueUsecase {
 	
 	@Override
 	public boolean verificaProdutoNoEstoque(String codBarras, boolean throwEx) throws BusinessException {
+		LoggingModule.info("iniciando método: verificaProdutoNoEstoque(codBarras, throwEx)]");
+
 		String produto = estoqueDAO.obterEstoquePorCodigoProduto(codBarras);
 		
 		boolean hasProdutoInStock = Boolean.FALSE;
@@ -75,15 +77,19 @@ public class EstoqueImpl implements EstoqueUsecase {
 				throw new BusinessException("Já existe um produto com o código de barras " + codBarras + " no estoque.");				
 			}
 		}
-
+		
+		LoggingModule.info("finalizando método: verificaProdutoNoEstoque(codBarras, throwEx)]");
 		return hasProdutoInStock;
 	}
 	
 	@Override
 	public List<EstoqueDTO> obterProdutosNoEstoque() throws RecordNotFoundException {
+		LoggingModule.info("iniciando método: obterProdutosNoEstoque()]");
+
 		List<EstoqueDTO> estoque = estoqueDAO.obterProdutosNoEstoque();
 		if (estoque.isEmpty()) throw new RecordNotFoundException("Não foi encontrado nenhum produto no estoque.");
 		
+		LoggingModule.info("finalizando método: obterProdutosNoEstoque()]");
 		return estoque;
 	}
 	
