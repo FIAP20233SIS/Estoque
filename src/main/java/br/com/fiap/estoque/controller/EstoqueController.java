@@ -1,5 +1,7 @@
 package br.com.fiap.estoque.controller;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.fiap.estoque.domain.model.EstoqueDTO;
 import br.com.fiap.estoque.domain.model.MovimentacaoEstoqueDTO;
 import br.com.fiap.estoque.domain.model.VerificaEspacoDTO;
 import br.com.fiap.estoque.domain.model.VerificaEspacoResponseDTO;
@@ -49,7 +52,11 @@ public interface EstoqueController {
 	@Operation(summary = "Estoque API - Verifica se um produto já está no estoque.",
 			description = "A partir de um código de barras informado via URL, o endpoint fará uma verificação no banco de dados para ver se já tem um produto cadastrado com o código informado.",
 			tags = { "Estoque API" })
-	public ResponseEntity<VerificaProdutoEstoqueDTO> verificaProdutoEstoque(@PathVariable String codBarras) throws RecordNotFoundException;
+	public ResponseEntity<VerificaProdutoEstoqueDTO> verificaProdutoEstoque(@PathVariable String codBarras) throws BusinessException;
 
+	@Operation(summary = "Estoque API - Lista todos os produtos do estoque.",
+			description = "Lista todos os produtos do estoque.",
+			tags = { "Estoque API" })
+	public ResponseEntity<List<EstoqueDTO>> obterProdutoNoEstoque() throws BusinessException;
 
 }

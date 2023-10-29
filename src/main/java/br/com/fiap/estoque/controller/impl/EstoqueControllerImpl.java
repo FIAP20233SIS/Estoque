@@ -1,5 +1,7 @@
 package br.com.fiap.estoque.controller.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,13 +12,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.fiap.estoque.controller.EstoqueController;
+import br.com.fiap.estoque.domain.model.EstoqueDTO;
 import br.com.fiap.estoque.domain.model.MovimentacaoEstoqueDTO;
 import br.com.fiap.estoque.domain.model.VerificaEspacoDTO;
 import br.com.fiap.estoque.domain.model.VerificaEspacoResponseDTO;
 import br.com.fiap.estoque.domain.model.VerificaProdutoEstoqueDTO;
 import br.com.fiap.estoque.domain.service.EstoqueImpl;
 import br.com.fiap.estoque.infrastructure.exception.BusinessException;
-import br.com.fiap.estoque.infrastructure.exception.RecordNotFoundException;
 import br.com.fiap.estoque.utils.Providers;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -36,10 +38,17 @@ public class EstoqueControllerImpl implements EstoqueController {
 	}
 	
 	@GetMapping("/verificaproduto/{codBarras}")
-	public ResponseEntity<VerificaProdutoEstoqueDTO> verificaProdutoEstoque(@PathVariable String codBarras) throws RecordNotFoundException {
+	public ResponseEntity<VerificaProdutoEstoqueDTO> verificaProdutoEstoque(@PathVariable String codBarras) throws BusinessException {
 		boolean hasProdutoInStock = estoqueService.verificaProdutoNoEstoque(codBarras, false);
 
 		return ResponseEntity.ok(new VerificaProdutoEstoqueDTO(codBarras, hasProdutoInStock, Providers.getProductInStockMessage(hasProdutoInStock, codBarras)));
+	}
+	
+	@GetMapping("/")
+	public ResponseEntity<List<EstoqueDTO>> obterProdutoNoEstoque() throws BusinessException {
+		List<EstoqueDTO> estoque = estoqueService.obterProdutosNoEstoque();
+
+		return ResponseEntity.ok(estoque);
 	}
 	
 	@PostMapping("/movimentar")

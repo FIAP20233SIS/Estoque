@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import br.com.fiap.estoque.domain.dao.EstoqueDAOImpl;
 import br.com.fiap.estoque.domain.dao.PrateleiraDAOImpl;
+import br.com.fiap.estoque.domain.model.EstoqueDTO;
 import br.com.fiap.estoque.domain.model.MovimentacaoEstoqueDTO;
 import br.com.fiap.estoque.domain.model.VerificaEspacoDTO;
 import br.com.fiap.estoque.domain.model.VerificaEspacoResponseDTO;
@@ -45,6 +46,7 @@ public class EstoqueImpl implements EstoqueUsecase {
 		return new VerificaEspacoResponseDTO(qtdeLugaresDisponiveis);
 	}
 
+	@Override
 	public MovimentacaoEstoqueDTO movimentarEstoque(VerificaEspacoDTO model) throws BusinessException {
 		LoggingModule.info("iniciando método: movimentarEstoque(model)]");
 
@@ -60,6 +62,29 @@ public class EstoqueImpl implements EstoqueUsecase {
 		LoggingModule.info("finalizando método: movimentarEstoque(model)]");
 		
 		return movimentacao;
+	}
+	
+	@Override
+	public boolean verificaProdutoNoEstoque(String codBarras, boolean throwEx) throws BusinessException {
+		String produto = estoqueDAO.obterEstoquePorCodigoProduto(codBarras);
+		
+		boolean hasProdutoInStock = Boolean.FALSE;
+		if (produto != null && !produto.isEmpty()) {
+			hasProdutoInStock = Boolean.TRUE;
+			if (throwEx) {
+				throw new BusinessException("Já existe um produto com o código de barras " + codBarras + " no estoque.");				
+			}
+		}
+
+		return hasProdutoInStock;
+	}
+	
+	@Override
+	public List<EstoqueDTO> obterProdutosNoEstoque() throws RecordNotFoundException {
+		List<EstoqueDTO> estoque = estoqueDAO.obterProdutosNoEstoque();
+		if (estoque.isEmpty()) throw new RecordNotFoundException("Não foi encontrado nenhum produto no estoque.");
+		
+		return estoque;
 	}
 	
 	private MovimentacaoEstoqueDTO movimentarEstoqueBanco(VerificaEspacoDTO model, Double tamanho) throws BusinessException {
@@ -108,21 +133,7 @@ public class EstoqueImpl implements EstoqueUsecase {
 		return movimentacao;
 	}
 	
-	public boolean verificaProdutoNoEstoque(String codBarras, boolean throwEx) throws RecordNotFoundException {
-		String produto = estoqueDAO.obterEstoquePorCodigoProduto(codBarras);
-		
-		boolean hasProdutoInStock = Boolean.FALSE;
-		if (produto != null && !produto.isEmpty()) {
-			hasProdutoInStock = true;
-			if (throwEx) {
-				throw new RecordNotFoundException("Já existe um produto com o código de barras " + codBarras + " no estoque.");				
-			}
-		}
-
-		return hasProdutoInStock;
-	}
-	
-	private boolean verificaProdutoNoEstoque(String codBarras) throws RecordNotFoundException {
+	private boolean verificaProdutoNoEstoque(String codBarras) throws BusinessException {
 		return this.verificaProdutoNoEstoque(codBarras, true);
 	}
 

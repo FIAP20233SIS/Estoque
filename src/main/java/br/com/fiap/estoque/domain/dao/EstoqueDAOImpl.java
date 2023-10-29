@@ -2,9 +2,11 @@ package br.com.fiap.estoque.domain.dao;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Repository;
 
+import br.com.fiap.estoque.domain.model.EstoqueDTO;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
@@ -33,6 +35,22 @@ public class EstoqueDAOImpl implements EstoqueDAO {
 		return count.longValue();
 	}
 	
+	@Override
+	public List<EstoqueDTO> obterProdutosNoEstoque() {
+	    String sql = "SELECT E.ID_ESTOQUE, E.ID_PRATELEIRA, E.COD_PRODUTO, E.DATA_ESTOQUE "
+	            + "FROM ESTOQUE E "
+	            + "WHERE E.COD_PRODUTO IS NOT NULL";
+
+	    @SuppressWarnings("unchecked")
+	    List<Object[]> resultList = entityManager.createNativeQuery(sql).getResultList();
+
+	    List<EstoqueDTO> result = resultList.stream()
+	        .map(EstoqueDTO::from)
+	        .collect(Collectors.toList());
+
+	    return result;
+	}
+
 	@Override
 	public String obterEstoquePorCodigoProduto(String codProd) {
 	    String sql = "SELECT E.COD_PRODUTO " +
