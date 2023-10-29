@@ -32,6 +32,12 @@ public class EstoqueImpl implements EstoqueUsecase {
 	@Autowired
 	private List<StockValidator> validators;
 
+	/**
+	 * Verifica a disponibilidade de espaço no estoque baseado no volume do item informado.
+	 *
+	 * @param verificaDTO Objeto contendo as dimensões do item para cálculo do volume.
+	 * @return VerificaEspacoResponseDTO contendo a quantidade de locais disponíveis para armazenamento do item.
+	 */
 	@Override
 	public VerificaEspacoResponseDTO verificarEstoque(VerificaEspacoDTO verificaDTO) {
 		LoggingModule.info("iniciando método: verificarEstoque(verificaDTO)]");
@@ -46,6 +52,13 @@ public class EstoqueImpl implements EstoqueUsecase {
 		return new VerificaEspacoResponseDTO(qtdeLugaresDisponiveis);
 	}
 
+	/**
+	 * Responsável pela movimentação de itens no estoque.
+	 *
+	 * @param model Objeto contendo informações para a movimentação de estoque.
+	 * @return MovimentacaoEstoqueDTO após a movimentação bem-sucedida.
+	 * @throws BusinessException Lançada caso a movimentação não possa ser realizada.
+	 */
 	@Override
 	public MovimentacaoEstoqueDTO movimentarEstoque(VerificaEspacoDTO model) throws BusinessException {
 		LoggingModule.info("iniciando método: movimentarEstoque(model)]");
@@ -64,6 +77,14 @@ public class EstoqueImpl implements EstoqueUsecase {
 		return movimentacao;
 	}
 	
+	/**
+	 * Verifica a presença de um produto no estoque pelo seu código de barras.
+	 *
+	 * @param codBarras Código de barras do produto a ser verificado.
+	 * @param throwEx Flag para determinar se uma exceção deve ser lançada caso o produto esteja presente.
+	 * @return boolean - true se o produto estiver no estoque; caso contrário, false.
+	 * @throws BusinessException Lançada se throwEx for true e o produto estiver presente no estoque.
+	 */
 	@Override
 	public boolean verificaProdutoNoEstoque(String codBarras, boolean throwEx) throws BusinessException {
 		LoggingModule.info("iniciando método: verificaProdutoNoEstoque(codBarras, throwEx)]");
@@ -82,6 +103,12 @@ public class EstoqueImpl implements EstoqueUsecase {
 		return hasProdutoInStock;
 	}
 	
+	/**
+	 * Recupera uma lista de todos os produtos atualmente em estoque.
+	 *
+	 * @return List<EstoqueDTO> contendo os produtos disponíveis.
+	 * @throws RecordNotFoundException Lançada se nenhum produto for encontrado no estoque.
+	 */
 	@Override
 	public List<EstoqueDTO> obterProdutosNoEstoque() throws RecordNotFoundException {
 		LoggingModule.info("iniciando método: obterProdutosNoEstoque()]");
@@ -93,6 +120,14 @@ public class EstoqueImpl implements EstoqueUsecase {
 		return estoque;
 	}
 	
+	/**
+	 * Auxilia na movimentação de estoque, manipulando a base de dados conforme ação de inserção ou retirada de produtos.
+	 *
+	 * @param model Objeto com detalhes da movimentação.
+	 * @param tamanho Tamanho do espaço necessário no estoque.
+	 * @return MovimentacaoEstoqueDTO detalhando a movimentação realizada.
+	 * @throws BusinessException Lançada em diversos cenários, como ausência do produto no estoque ou falta de espaço.
+	 */
 	private MovimentacaoEstoqueDTO movimentarEstoqueBanco(VerificaEspacoDTO model, Double tamanho) throws BusinessException {
 		int tipoMovimentacao = model.tipoMovimentacao().getType();
 		MovimentacaoEstoqueDTO movimentacao = null;
@@ -139,10 +174,22 @@ public class EstoqueImpl implements EstoqueUsecase {
 		return movimentacao;
 	}
 	
+	/**
+	 * Versão simplificada do método público verificaProdutoNoEstoque, sempre lança uma exceção se o produto estiver no estoque.
+	 *
+	 * @param codBarras Código de barras do produto.
+	 * @return boolean indicando a presença do produto no estoque.
+	 * @throws BusinessException Lançada se o produto estiver presente no estoque.
+	 */
 	private boolean verificaProdutoNoEstoque(String codBarras) throws BusinessException {
 		return this.verificaProdutoNoEstoque(codBarras, true);
 	}
 
+	/**
+	 * Executa uma série de validações sobre um objeto VerificaEspacoDTO.
+	 *
+	 * @param model Objeto a ser validado.
+	 */
 	private void callValidators(VerificaEspacoDTO model) {
 		LoggingModule.debug("[" + this.getClass().getName() + "] " + "iniciando chamada dos validators... ");
 		validators.forEach(v -> {
