@@ -10,8 +10,9 @@ import br.com.fiap.estoque.domain.dao.EstoqueDAOImpl;
 import br.com.fiap.estoque.domain.dao.PrateleiraDAOImpl;
 import br.com.fiap.estoque.domain.model.EstoqueDTO;
 import br.com.fiap.estoque.domain.model.MovimentacaoEstoqueDTO;
-import br.com.fiap.estoque.domain.model.VerificaEspacoDTO;
+import br.com.fiap.estoque.domain.model.MovimentacaoRequestDTO;
 import br.com.fiap.estoque.domain.model.VerificaEspacoResponseDTO;
+import br.com.fiap.estoque.domain.model.VerificaEstoqueDTO;
 import br.com.fiap.estoque.domain.usecase.EstoqueUsecase;
 import br.com.fiap.estoque.domain.validations.StockValidator;
 import br.com.fiap.estoque.enums.TipoMovimentacao;
@@ -39,7 +40,7 @@ public class EstoqueImpl implements EstoqueUsecase {
 	 * @return VerificaEspacoResponseDTO contendo a quantidade de locais disponíveis para armazenamento do item.
 	 */
 	@Override
-	public VerificaEspacoResponseDTO verificarEstoque(VerificaEspacoDTO verificaDTO) {
+	public VerificaEspacoResponseDTO verificarEstoque(VerificaEstoqueDTO verificaDTO) {
 		LoggingModule.info("iniciando método: verificarEstoque(verificaDTO)]");
 
 		Double volume = Calculos.calcularVolume(verificaDTO.largura(), verificaDTO.altura(), verificaDTO.profundidade());
@@ -60,7 +61,7 @@ public class EstoqueImpl implements EstoqueUsecase {
 	 * @throws BusinessException Lançada caso a movimentação não possa ser realizada.
 	 */
 	@Override
-	public MovimentacaoEstoqueDTO movimentarEstoque(VerificaEspacoDTO model) throws BusinessException {
+	public MovimentacaoEstoqueDTO movimentarEstoque(MovimentacaoRequestDTO model) throws BusinessException {
 		LoggingModule.info("iniciando método: movimentarEstoque(model)]");
 
 		this.callValidators(model);
@@ -128,7 +129,7 @@ public class EstoqueImpl implements EstoqueUsecase {
 	 * @return MovimentacaoEstoqueDTO detalhando a movimentação realizada.
 	 * @throws BusinessException Lançada em diversos cenários, como ausência do produto no estoque ou falta de espaço.
 	 */
-	private MovimentacaoEstoqueDTO movimentarEstoqueBanco(VerificaEspacoDTO model, Double tamanho) throws BusinessException {
+	private MovimentacaoEstoqueDTO movimentarEstoqueBanco(MovimentacaoRequestDTO model, Double tamanho) throws BusinessException {
 		int tipoMovimentacao = model.tipoMovimentacao().getType();
 		MovimentacaoEstoqueDTO movimentacao = null;
 		
@@ -190,7 +191,7 @@ public class EstoqueImpl implements EstoqueUsecase {
 	 *
 	 * @param model Objeto a ser validado.
 	 */
-	private void callValidators(VerificaEspacoDTO model) {
+	private void callValidators(MovimentacaoRequestDTO model) {
 		LoggingModule.debug("[" + this.getClass().getName() + "] " + "iniciando chamada dos validators... ");
 		validators.forEach(v -> {
 			try {

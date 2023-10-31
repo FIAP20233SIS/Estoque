@@ -14,8 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.fiap.estoque.controller.EstoqueController;
 import br.com.fiap.estoque.domain.model.EstoqueDTO;
 import br.com.fiap.estoque.domain.model.MovimentacaoEstoqueDTO;
-import br.com.fiap.estoque.domain.model.VerificaEspacoDTO;
+import br.com.fiap.estoque.domain.model.MovimentacaoRequestDTO;
 import br.com.fiap.estoque.domain.model.VerificaEspacoResponseDTO;
+import br.com.fiap.estoque.domain.model.VerificaEstoqueDTO;
 import br.com.fiap.estoque.domain.model.VerificaProdutoEstoqueDTO;
 import br.com.fiap.estoque.domain.service.EstoqueImpl;
 import br.com.fiap.estoque.infrastructure.exception.BusinessException;
@@ -31,7 +32,7 @@ public class EstoqueControllerImpl implements EstoqueController {
 	private EstoqueImpl estoqueService;
 	
 	@PostMapping("/verificaespaco")
-	public ResponseEntity<VerificaEspacoResponseDTO> verificaEspacoEstoque(@Valid @RequestBody VerificaEspacoDTO estoqueDTO) {
+	public ResponseEntity<VerificaEspacoResponseDTO> verificaEspacoEstoque(@Valid @RequestBody VerificaEstoqueDTO estoqueDTO) {
 		var estoque = estoqueService.verificarEstoque(estoqueDTO);
 		
 		return ResponseEntity.ok(estoque);
@@ -53,7 +54,7 @@ public class EstoqueControllerImpl implements EstoqueController {
 	
 	@PostMapping("/movimentar")
 	@Transactional
-	public ResponseEntity<MovimentacaoEstoqueDTO> movimentarEstoque(@Valid @RequestBody VerificaEspacoDTO model) throws BusinessException {
+	public ResponseEntity<MovimentacaoEstoqueDTO> movimentarEstoque(@Valid @RequestBody MovimentacaoRequestDTO model) throws BusinessException {
 		MovimentacaoEstoqueDTO produtoIncluido = estoqueService.movimentarEstoque(model);
 		
 		return ResponseEntity.ok(produtoIncluido);
