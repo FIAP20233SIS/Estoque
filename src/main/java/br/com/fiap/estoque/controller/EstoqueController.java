@@ -14,11 +14,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.fiap.estoque.domain.model.EstoqueDTO;
 import br.com.fiap.estoque.domain.model.MovimentacaoEstoqueDTO;
-import br.com.fiap.estoque.domain.model.VerificaEspacoDTO;
+import br.com.fiap.estoque.domain.model.MovimentacaoRequestDTO;
 import br.com.fiap.estoque.domain.model.VerificaEspacoResponseDTO;
+import br.com.fiap.estoque.domain.model.VerificaEstoqueDTO;
 import br.com.fiap.estoque.domain.model.VerificaProdutoEstoqueDTO;
 import br.com.fiap.estoque.infrastructure.exception.BusinessException;
-import br.com.fiap.estoque.infrastructure.exception.RecordNotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -42,12 +42,12 @@ public interface EstoqueController {
 	@ApiResponse(responseCode = "404", description = "Login or Password not found", content = @Content) })
 	@PostMapping(value = "/", consumes = "multipart/form-data")
 	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<VerificaEspacoResponseDTO> verificaEspacoEstoque(@Valid @RequestBody VerificaEspacoDTO estoqueDTO);
+	public ResponseEntity<VerificaEspacoResponseDTO> verificaEspacoEstoque(@Valid @RequestBody VerificaEstoqueDTO estoqueDTO);
 	
 	@Operation(summary = "Estoque API - Realiza as movimentações no estoque.",
 			description = "Realiza a retirada ou inclusão no estoque.",
 			tags = { "Estoque API" })
-	public ResponseEntity<MovimentacaoEstoqueDTO> movimentarEstoque(@Valid @RequestBody VerificaEspacoDTO estoqueDTO) throws BusinessException;
+	public ResponseEntity<MovimentacaoEstoqueDTO> movimentarEstoque(@Valid @RequestBody MovimentacaoRequestDTO estoqueDTO) throws BusinessException;
 	
 	@Operation(summary = "Estoque API - Verifica se um produto já está no estoque.",
 			description = "A partir de um código de barras informado via URL, o endpoint fará uma verificação no banco de dados para ver se já tem um produto cadastrado com o código informado.",

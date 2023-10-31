@@ -2,7 +2,7 @@ package br.com.fiap.estoque.utils;
 
 import java.util.List;
 
-import br.com.fiap.estoque.domain.model.VerificaEspacoDTO;
+import br.com.fiap.estoque.domain.model.MovimentacaoRequestDTO;
 
 public class Providers {
 	
@@ -15,7 +15,7 @@ public class Providers {
 	 * @return Uma lista de {@code Double} contendo, nesta ordem, a largura, altura e profundidade
 	 *         extraídas do objeto {@code VerificaEspacoDTO} fornecido.
 	 */
-	public static List<Double> createSideSizeValuesList(VerificaEspacoDTO model) {
+	public static List<Double> createSideSizeValuesList(MovimentacaoRequestDTO model) {
 	    return List.of(model.largura(), model.altura(), model.profundidade());
 	}
 	

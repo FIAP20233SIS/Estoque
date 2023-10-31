@@ -12,7 +12,7 @@
 	<groupId>br.com.fiap</groupId>
 	<artifactId>estoque</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 	<name>estoque</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
@@ -71,6 +71,7 @@
 	</dependencies>
 
 	<build>
+	    <defaultGoal>package</defaultGoal>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>

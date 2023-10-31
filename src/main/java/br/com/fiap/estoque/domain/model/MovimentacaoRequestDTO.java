@@ -5,7 +5,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-public record VerificaEspacoDTO(
+public record MovimentacaoRequestDTO(
 		@NotBlank
 		String codigoBarras,
 		
@@ -20,17 +20,9 @@ public record VerificaEspacoDTO(
 		@NotNull
 		@Min(0)
 		Double profundidade,
-		
-		@NotNull
-		@Min(0)
-		Double quantidade,
-		
-		@NotNull
-		@Min(0)
-		Double volume,
-		
+				
 		@NotNull
 		TipoMovimentacao tipoMovimentacao
-		) {
+	) {
 }
 
