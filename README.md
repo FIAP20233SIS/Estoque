@@ -31,5 +31,12 @@ O projeto utiliza as seguintes dependências, conforme especificadas no arquivo 
 - **Spring Boot Test**: Biblioteca de testes para aplicações Spring Boot.
 - **Springdoc OpenAPI UI**: Biblioteca para geração de documentação OpenAPI e UI.
 
+## Funcionalidades da API
+
+- **/v1/estoque/verificaespaco**: Retorna o número de espaços disponíveis no estoque para a largura, altura e profundidade informada. Retornará 0 caso não tenha nenhuma.
+- **/v1/estoque/movimentar**: Realiza a retirada ou inclusão no estoque.
+- **/v1/estoque/verificaespaco/{codBarras}**: A partir de um código de barras informado via URL, o endpoint fará uma verificação no banco de dados para ver se já tem um produto cadastrado com o código informado.
+- **/v1/estoque/**: Lista todos os produtos do estoque.
+
 ## Link da Aplicação
 https://estoquefiap.azurewebsites.net/swagger-ui/index.html#/
