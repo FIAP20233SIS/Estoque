@@ -30,3 +30,6 @@ O projeto utiliza as seguintes dependências, conforme especificadas no arquivo 
 - **Tomcat**: Servidor web embutido do Spring Boot.
 - **Spring Boot Test**: Biblioteca de testes para aplicações Spring Boot.
 - **Springdoc OpenAPI UI**: Biblioteca para geração de documentação OpenAPI e UI.
+
+## Link da Aplicação
+https://estoquefiap.azurewebsites.net/swagger-ui/index.html#/
